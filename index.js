@@ -1,57 +1,46 @@
 const express = require('express')
 const bodyparser = require('body-parser')
-//const admin = require('./firebase-config')
 var admin = require("firebase-admin");
 
+//Add service account json from firebase settings
 var serviceAccount = require("../firebase-nodejs-master/fir-inappmessaging.json");
 
-
+//Initialize the service account to firebase admin
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
+
+//initialise express.js
 const app = express()
 app.use(bodyparser.json())
 
-const port = 5000
+//Server Port
+const port = 3000
 
+//To be worked 
 const notification_options = {
     priority: "high",
     timeToLive: 60 * 60 * 24
   };
 
-
-app.post('/firebase/notification', (req, res)=>{
+//Post To req to firebase
+app.post('/firebase/sendnNotification', (req, res)=>{
     const  registrationToken = req.body.registrationToken
-    const message1 = req.body.message
-    const options =  notification_options
-    console.log('registrationToken----'+registrationToken);
-    console.log('message1----'+message1);
-    console.log('options----'+options);
-    const message2 = {
-     
-      "message":{
-        "token":"​d3A4q57ES4ukw7VbPgvkbu",
-        "notification":{
-          "title":"Portugal vs. Denmark",
-          "body":"great match!"
-        }
-      }
-    }
-
-    const message = {
+    const title = req.body.title
+    const message =  req.body.message
+    //Notification body
+    const notificationBody = {
       data: {
-        score: '850',
-        time: '2:45'
+        title: title,
+        message: message
       },
-      token: '​d3A4q57ES4ukw7VbPgvkbu'
+      token: registrationToken
     };
-    console.log('message-----------',message);
-    
-    admin.messaging().send(message)
+    console.log('message-----------',notificationBody);
+    //send notification body to firebase
+    admin.messaging().send(notificationBody)
       .then( response => {
-
        res.status(200).send("Notification sent successfully"+response)
-        
       })
       .catch( error => {
           console.log(error);
@@ -59,6 +48,7 @@ app.post('/firebase/notification', (req, res)=>{
 
 })
 
+//Server Listen
 app.listen(port, () =>{
 console.log("listening to port "+port)
 })

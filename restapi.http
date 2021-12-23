@@ -1,10 +1,11 @@
-@baseurl = http://localhost:5000
+@baseurl = http://localhost:3000
 
-POST {{baseurl}}/firebase/notification
+POST {{baseurl}}/firebase/sendnNotification
 content-type: application/json
 
 {
-    "registrationToken" : "​d3A4q57ES4ukw7VbPgvkbu",
-    "message" : "Helloo",
-    "options" : "notification_options"
+    "registrationToken" : "add - fcm - token -  from - android",
+    "title" : "Helloo",
+    "message" : "Welcome Rathish"
 }
+
